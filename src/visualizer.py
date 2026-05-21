@@ -3,6 +3,7 @@ Visualizaciones para el análisis hotelero
 """
 import plotly.express as px
 import plotly.graph_objects as go
+import pandas as pd
 
 class HotelCharts:
     def __init__(self, df):
@@ -21,7 +22,9 @@ class HotelCharts:
         return fig
 
     def pie_conceptos(self, names, values, title="Distribución de Débito"):
-        fig = px.pie(self.df, names=names, values=values, title=title)
+        """Gráfico de torta usando listas/arrays, sin depender de self.df"""
+        temp_df = pd.DataFrame({'names': names, 'values': values})
+        fig = px.pie(temp_df, names='names', values='values', title=title)
         fig.update_traces(textposition='inside', textinfo='percent+label')
         fig.update_layout(height=400)
         return fig
@@ -46,33 +49,6 @@ class HotelCharts:
         fig.update_layout(
             xaxis_title='Fecha',
             yaxis_title='Débito ($)',
-            hovermode='x unified'
-        )
-        return fig
-    
-    def barras_debito_credito(self, labels, debito_vals, credito_vals, title="Débito vs Crédito"):
-        """Gráfico de barras agrupadas: débito y crédito"""
-        fig = go.Figure(data=[
-            go.Bar(name='Débito', x=labels, y=debito_vals, marker_color='#1f77b4'),
-            go.Bar(name='Crédito', x=labels, y=credito_vals, marker_color='#ff7f0e')
-        ])
-        fig.update_layout(
-            title=title,
-            barmode='group',
-            xaxis_title="Usuario",
-            yaxis_title="Monto ($)",
-            height=400
-        )
-        return fig
-    
-    def lineas_multiples(self, data, x, y, color, title="Evolución por Grupo"):
-        """Gráfico de líneas múltiples coloreado por grupo"""
-        fig = px.line(data, x=x, y=y, color=color, markers=True, title=title,
-                      color_discrete_sequence=px.colors.qualitative.Set1)
-        fig.update_traces(marker=dict(size=6))
-        fig.update_layout(
-            xaxis_title='Fecha',
-            yaxis_title='Monto ($)',
             hovermode='x unified'
         )
         return fig
